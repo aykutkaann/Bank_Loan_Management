@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\BankLoan.Application\BankLoan.Application.csproj" />
+    <ProjectReference Include="..\BankLoan.Infrastructure\BankLoan.Infrastructure.csproj" />
+    <ProjectReference Include="..\BankLoan.Shared\BankLoan.Shared.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>
