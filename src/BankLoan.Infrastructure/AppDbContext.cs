@@ -9,7 +9,7 @@ using System.Text;
 
 namespace BankLoan.Infrastructure
 {
-    public class AppDbContext : IdentityDbContext<AppUser>
+    public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
     {
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }

@@ -27,7 +27,7 @@ namespace BankLoan.Domain.Entities
 
         public int CreditScoreAtApply { get; set; }
         public string? RejectionReason { get; set; }
-        public string? ApprovedByUserId { get; set; }
+        public Guid? ApprovedByUserId { get; set; }
 
         public AppUser? ApprovedByUser { get; set; }
 
