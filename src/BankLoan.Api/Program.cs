@@ -68,6 +68,54 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+//Seed Roles
+
+using var scope = app.Services.CreateScope();
+
+var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+
+string[] roles = ["Admin", "LoanOfficer", "Customer"];
+foreach (var role in roles)
+{
+    if (!await roleManager.RoleExistsAsync(role))
+        await roleManager.CreateAsync(new IdentityRole<Guid>(role));
+}
+
+var adminEmail = "admin@bank.com";
+if(await userManager.FindByEmailAsync(adminEmail) == null)
+{
+    var adminUser = new AppUser
+    {
+        UserName = adminEmail,
+        Email = adminEmail,
+        EmailConfirmed = true,
+    };
+
+    var result = await userManager.CreateAsync(adminUser, "Admin123!");
+    if (result.Succeeded)
+    {
+        await userManager.AddToRoleAsync(adminUser, "Admin");
+    }
+}
+
+var officerEmail = "officer@bank.com";
+if(await userManager.FindByEmailAsync(officerEmail) == null)
+{
+    var officerUser = new AppUser
+    {
+        UserName = officerEmail,
+        Email = officerEmail,
+        EmailConfirmed = true,
+    };
+
+    var result = await userManager.CreateAsync(officerUser, "Officer123!");
+    if (result.Succeeded)
+    {
+        await userManager.AddToRoleAsync(officerUser, "LoanOfficer");
+    }
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -81,16 +129,11 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+
+//Endpoints
 app.MapAuthEndpoint();
 
 
-using var scope = app.Services.CreateScope();
-var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
-string[] roles = ["Admin", "LoanOfficer", "Customer"];
-foreach (var role in roles)
-{
-    if (!await roleManager.RoleExistsAsync(role))
-        await roleManager.CreateAsync(new IdentityRole<Guid>(role));
-}
+
 
 app.Run();

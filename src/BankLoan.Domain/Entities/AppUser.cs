@@ -11,7 +11,8 @@ namespace BankLoan.Domain.Entities
 
         public  Customer? Customer { get; set; }
 
-  
+
+
 
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
