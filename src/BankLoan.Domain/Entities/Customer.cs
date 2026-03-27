@@ -15,6 +15,7 @@ namespace BankLoan.Domain.Entities
 
         public string FirstName { get; set; }
         public string LastName { get; set; }
+
         public string NationalId { get; set; }
         public DateOnly DateOfBirth { get; set; }
         public decimal MonthlyIncome { get; set; }
