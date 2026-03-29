@@ -1,7 +1,13 @@
 using BankLoan.Api.Endpoints;
 using BankLoan.Application.Services;
 using BankLoan.Domain.Entities;
+using BankLoan.Domain.Interfaces;
 using BankLoan.Infrastructure;
+using BankLoan.Infrastructure.Messaging;
+using BankLoan.Infrastructure.Messaging.Consumers;
+using BankLoan.Infrastructure.Messaging.Publishers;
+using BankLoan.Infrastructure.Repositories;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +35,32 @@ builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(options =>
 })
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
+
+
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumers(typeof(LoanApprovedConsumer).Assembly);
+    x.UsingRabbitMq((ctx, cfg) =>
+    {
+        cfg.Host("rabbitmq://localhost");
+        cfg.ConfigureEndpoints(ctx);
+    });
+});
+
+
+// Buiseness services
+builder.Services.AddScoped<IEventPublisher, EventPublisher>();
+builder.Services.AddScoped<ILoanEligibilityService, LoanEligibilityService>();
+builder.Services.AddScoped<ILoanApplicationService, LoanApplicationService>();
+builder.Services.AddScoped<ILoanCampaignService, LoanCampaignService>();
+
+//Repositories
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<ILoanCampaignRepository, LoanCampaignRepository>();
+builder.Services.AddScoped<ILoanApplicationRepository, LoanApplicationRepository>();
+
+
 
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
