@@ -14,7 +14,11 @@ namespace BankLoan.Infrastructure.Repositories
         private  ILoanApplicationRepository _loanApplicationRepo;
         private  ILoanCampaignRepository _loanCampaignRepo;
 
-      
+
+        public UnitOfWork(AppDbContext context)
+        {
+            _context = context;
+        }
 
         public ICustomerRepository Customers => _customerRepository ??= new CustomerRepository(_context);
 

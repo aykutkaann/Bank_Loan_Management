@@ -6,4 +6,7 @@
     <Project Path="src/BankLoan.Infrastructure/BankLoan.Infrastructure.csproj" />
     <Project Path="src/BankLoan.Shared/BankLoan.Shared.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/BankLoan.UnitTests/BankLoan.UnitTests.csproj" />
+  </Folder>
 </Solution>
