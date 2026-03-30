@@ -1,4 +1,5 @@
-﻿using BankLoan.Application.DTOs;
+﻿using BankLoan.Api.Filters;
+using BankLoan.Application.DTOs;
 using BankLoan.Application.Services;
 using BankLoan.Domain.Entities;
 using BankLoan.Domain.Interfaces;
@@ -12,7 +13,7 @@ namespace BankLoan.Api.Endpoints
 
         public static void MapApplicationEndpoints(this IEndpointRouteBuilder routes)
         {
-            var group = routes.MapGroup("/api/application");
+            var group = routes.MapGroup("/api/application").WithTags("LoanApplications");
 
             group.MapPost("/", async ([FromBody] ApplyForLoanRequest request, ILoanApplicationService service, HttpContext context, IUnitOfWork uow) =>
             {
@@ -35,7 +36,7 @@ namespace BankLoan.Api.Endpoints
                         : Results.BadRequest(result);
 
 
-            }).RequireAuthorization(policy => policy.RequireRole("Customer"));
+            }).RequireAuthorization(policy => policy.RequireRole("Customer")).AddEndpointFilter<ValidationFilter<ApplyForLoanRequest>>();
 
             group.MapGet("/", async (ILoanApplicationService service) =>
             {

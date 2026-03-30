@@ -1,4 +1,5 @@
-﻿using BankLoan.Application.Services;
+﻿using BankLoan.Api.Filters;
+using BankLoan.Application.Services;
 using BankLoan.Domain.Entities;
 using BankLoan.Domain.Interfaces;
 
@@ -8,7 +9,7 @@ namespace BankLoan.Api.Endpoints
     {
         public static void MapCampaignEndpoints(this IEndpointRouteBuilder routes)
         {
-            var group = routes.MapGroup("/api/campaign").WithTags("campaign");
+            var group = routes.MapGroup("/api/campaign").WithTags("LoanCampaigns");
 
             group.MapGet("/", async (IUnitOfWork unitOfWork) =>
             {
@@ -36,7 +37,7 @@ namespace BankLoan.Api.Endpoints
                 return Results.Created($"/api/campaign/{campaign.Id}", campaign);
 
 
-            }).RequireAuthorization(policy => policy.RequireRole( "Admin"));
+            }).RequireAuthorization(policy => policy.RequireRole( "Admin")).AddEndpointFilter<ValidationFilter<LoanCampaign>>();
 
             group.MapPut("/{id:guid}", async (Guid id, LoanCampaign updatedCampaign, ILoanCampaignService service) =>
             {

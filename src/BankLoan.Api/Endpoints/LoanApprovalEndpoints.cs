@@ -9,7 +9,7 @@ namespace BankLoan.Api.Endpoints
     {
         public static void MapApprovalEndpoints(this IEndpointRouteBuilder routes)
         {
-            var group = routes.MapGroup("/api/applications").WithTags("Approval")
+            var group = routes.MapGroup("/api/applications").WithTags("LoanApproval")
                 .RequireAuthorization(policy => policy.RequireRole("LoanOfficer", "Admin"));
 
             group.MapPost("/{id:guid}/approve", async (Guid id, ClaimsPrincipal user, IUnitOfWork uow, IPublishEndpoint publish) =>

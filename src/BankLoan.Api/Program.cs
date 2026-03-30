@@ -1,5 +1,7 @@
 using BankLoan.Api.Endpoints;
+using BankLoan.Api.Middleware;
 using BankLoan.Application.Services;
+using BankLoan.Application.Validators;
 using BankLoan.Domain.Entities;
 using BankLoan.Domain.Interfaces;
 using BankLoan.Infrastructure;
@@ -7,6 +9,7 @@ using BankLoan.Infrastructure.Messaging;
 using BankLoan.Infrastructure.Messaging.Consumers;
 using BankLoan.Infrastructure.Messaging.Publishers;
 using BankLoan.Infrastructure.Repositories;
+using FluentValidation;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -125,7 +128,16 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+//validators
+
+builder.Services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
+
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
+app.UseMiddleware<RequestLoggingMiddleware>();
+
+
 
 // Seed all data
 await BankLoan.Infrastructure.Data.Seed.DataSeeder.SeedAsync(app.Services);

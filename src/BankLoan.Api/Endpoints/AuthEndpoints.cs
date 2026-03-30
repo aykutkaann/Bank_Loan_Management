@@ -1,4 +1,5 @@
-﻿using BankLoan.Application.DTOs;
+﻿using BankLoan.Api.Filters;
+using BankLoan.Application.DTOs;
 using BankLoan.Application.Services;
 using System.Security.Claims;
 
@@ -25,7 +26,7 @@ namespace BankLoan.Api.Endpoints
                     return Results.BadRequest(new { message = err.Message });
                 }
 
-            });
+            }).AddEndpointFilter<ValidationFilter<RegisterDto>>();
 
 
             group.MapPost("/login", async (LoginDto loginDto, IAuthService authService) =>
@@ -40,7 +41,7 @@ namespace BankLoan.Api.Endpoints
                     return Results.BadRequest(new { message = err.Message });
 
                 }
-            });
+            }).AddEndpointFilter<ValidationFilter<LoginDto>>();
 
 
             group.MapPost("/refresh", async (RefreshTokenRequest request, IAuthService authService) =>
