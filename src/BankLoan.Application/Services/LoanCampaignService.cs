@@ -59,7 +59,7 @@ namespace BankLoan.Application.Services
 
            if(campaign is null)
             {
-                throw new Exception("Campaign not found.");
+                throw new KeyNotFoundException("Campaign not found.");
             }
 
             campaign.IsActive = false;
