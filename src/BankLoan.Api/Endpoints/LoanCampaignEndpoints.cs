@@ -1,4 +1,5 @@
 ﻿using BankLoan.Api.Filters;
+using BankLoan.Application.Mappings;
 using BankLoan.Application.Services;
 using BankLoan.Domain.Entities;
 using BankLoan.Domain.Interfaces;
@@ -15,7 +16,7 @@ namespace BankLoan.Api.Endpoints
             {
                 var campaigns = await unitOfWork.LoanCampaigns.GetAllAsync();
 
-                return Results.Ok(campaigns);
+                return Results.Ok(campaigns.Select(a => a.ToDto()));
             });
 
             group.MapGet("/{id:guid}", async (Guid id, IUnitOfWork unitOfWork) =>
@@ -26,7 +27,7 @@ namespace BankLoan.Api.Endpoints
                     return Results.NotFound(new { Message = "Campaign is not found." });
                 }
 
-                return Results.Ok(campaign);
+                return Results.Ok(campaign.ToDto());
             });
 
 
@@ -34,7 +35,7 @@ namespace BankLoan.Api.Endpoints
 
             {
                  await service.AddAsync(campaign);
-                return Results.Created($"/api/campaign/{campaign.Id}", campaign);
+                return Results.Created($"/api/campaign/{campaign.Id}", campaign.ToDto());
 
 
             }).RequireAuthorization(policy => policy.RequireRole( "Admin")).AddEndpointFilter<ValidationFilter<LoanCampaign>>();
@@ -60,7 +61,7 @@ namespace BankLoan.Api.Endpoints
 
                 await service.UpdateAsync(existingCampaign);
 
-                return Results.Ok(existingCampaign);
+                return Results.Ok(existingCampaign.ToDto());
 
 
 

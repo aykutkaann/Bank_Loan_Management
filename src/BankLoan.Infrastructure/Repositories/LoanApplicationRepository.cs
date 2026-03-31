@@ -20,9 +20,10 @@ namespace BankLoan.Infrastructure.Repositories
 
         public async Task<LoanApplication?> GetByIdAsync(Guid id)
         {
-            var loanApp = await _context.LoanApplications.FindAsync(id);
-
-            return loanApp;
+            return await _context.LoanApplications
+                .Include(a => a.Customer)
+                .Include(a => a.Campaign)
+                .FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task<IEnumerable<LoanApplication>> GetByCustomerIdAsync(Guid customerId)
@@ -46,7 +47,10 @@ namespace BankLoan.Infrastructure.Repositories
 
         public async Task<IEnumerable<LoanApplication>> GetAllAsync()
         {
-            return await _context.LoanApplications.ToListAsync();
+            return await _context.LoanApplications
+                .Include(a => a.Customer)
+                .Include(a => a.Campaign)
+                .ToListAsync();
         }
 
         public async Task AddAsync(LoanApplication loanApplication)

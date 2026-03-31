@@ -1,0 +1,69 @@
+name: CI - Build & Test
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres123
+          POSTGRES_DB: bankloandb_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+      rabbitmq:
+        image: rabbitmq:4-management-alpine
+        env:
+          RABBITMQ_DEFAULT_USER: guest
+          RABBITMQ_DEFAULT_PASS: guest
+        ports:
+          - 5672:5672
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore src/BankLoan.Api/BankLoan.Api.csproj
+
+      - name: Build
+        run: dotnet build src/BankLoan.Api/BankLoan.Api.csproj --no-restore -c Release
+
+      - name: Restore test dependencies
+        run: dotnet restore tests/BankLoan.UnitTests/BankLoan.UnitTests.csproj
+
+      - name: Run Unit Tests
+        run: dotnet test tests/BankLoan.UnitTests/BankLoan.UnitTests.csproj --no-restore --verbosity normal
+
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t bankloan-api:${{ github.sha }} .
+
+      - name: Verify Docker image
+        run: docker images bankloan-api:${{ github.sha }}

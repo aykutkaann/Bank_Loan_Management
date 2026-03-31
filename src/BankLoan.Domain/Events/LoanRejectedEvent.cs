@@ -5,8 +5,8 @@ using System.Text;
 namespace BankLoan.Domain.Events
 {
     public record LoanRejectedEvent
-    (
-         Guid ApplicationId,
-         string RejectionReason
-    );
+    {
+        public Guid ApplicationId { get; init; }
+        public string RejectionReason { get; init; } = string.Empty;
+    }
 }

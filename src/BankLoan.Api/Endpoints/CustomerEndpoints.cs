@@ -1,4 +1,5 @@
-﻿using BankLoan.Application.Services;
+﻿using BankLoan.Application.Mappings;
+using BankLoan.Application.Services;
 using BankLoan.Domain.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -18,7 +19,7 @@ namespace BankLoan.Api.Endpoints
             {
                 var customer = await unitOfWork.Customers.GetAllAsync();
 
-                return Results.Ok(customer);
+                return Results.Ok(customer.Select(c=> c.ToDto()));
                 
             });
 
@@ -31,7 +32,7 @@ namespace BankLoan.Api.Endpoints
                     return Results.NotFound(new {Message = "Customer not found."});
                 }
 
-                return Results.Ok(customer);
+                return Results.Ok(customer.ToDto());
             });
 
             group.MapGet("/{id:guid}/credit-score", async (Guid id, IUnitOfWork unitOfWork, ICreditScoreService creditScore) =>

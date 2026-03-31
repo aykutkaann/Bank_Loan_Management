@@ -1,5 +1,6 @@
 ﻿using BankLoan.Api.Filters;
 using BankLoan.Application.DTOs;
+using BankLoan.Application.Mappings;
 using BankLoan.Application.Services;
 using BankLoan.Domain.Entities;
 using BankLoan.Domain.Interfaces;
@@ -41,7 +42,7 @@ namespace BankLoan.Api.Endpoints
             group.MapGet("/", async (ILoanApplicationService service) =>
             {
                 var applications = await service.GetAllAsync();
-                return Results.Ok(applications);
+                return Results.Ok(applications.Select(a => a.ToDto()));
             }).RequireAuthorization();
 
 

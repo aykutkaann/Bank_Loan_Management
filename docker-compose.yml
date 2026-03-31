@@ -1,5 +1,24 @@
 services:
-    postgres: 
+    bankloan-api:
+        build: .
+        container_name: bankloan_api
+        ports:
+            - "5000:8080"
+        depends_on:
+            - postgres
+            - rabbitmq
+        environment:
+            - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=bankloandb;Username=postgres;Password=password123
+            - JwtSettings__Key=BurayaEnAz32KarakterliGucluBirKeyYazmalisin123!
+            - JwtSettings__Issuer=BankLoanApi
+            - JwtSettings__Audience=BankLoanApp
+            - JwtSettings__ExpiryMinutes=60
+            - RabbitMQ__Host=rabbitmq
+            - RabbitMQ__Username=guest
+            - RabbitMQ__Password=guest
+            - ASPNETCORE_ENVIRONMENT=Production
+
+    postgres:
         image: postgres:17-alpine
         container_name: bankloan_db
         environment:
@@ -10,8 +29,7 @@ services:
             - "5433:5432"
         volumes:
             - postgres_data:/var/lib/postgresql/data
-        
-    
+
     rabbitmq:
         image: rabbitmq:4-management-alpine
         container_name: bankloan_rabbitmq
@@ -24,7 +42,3 @@ services:
 
 volumes:
     postgres_data:
-
-
-
-        

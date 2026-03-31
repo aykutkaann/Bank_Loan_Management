@@ -31,7 +31,7 @@ namespace BankLoan.Api.Endpoints
                 uow.LoanApplications.Update(application);
                 await uow.SaveChangesAsync();
 
-                await publish.Publish(new LoanApprovedEvent(application.Id, officerId));
+                await publish.Publish(new LoanApprovedEvent { ApplicationId = application.Id, ApprovedUserId = officerId });
 
                 return Results.Ok(new { Message = "Application approved successfully." });
             });
@@ -53,7 +53,7 @@ namespace BankLoan.Api.Endpoints
                 uow.LoanApplications.Update(application);
                 await uow.SaveChangesAsync();
 
-                await publish.Publish(new LoanRejectedEvent(application.Id, request.Reason));
+                await publish.Publish(new LoanRejectedEvent { ApplicationId = application.Id, RejectionReason = request.Reason });
 
                 return Results.Ok(new { Message = "Application rejected." });
             });

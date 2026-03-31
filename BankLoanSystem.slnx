@@ -4,7 +4,6 @@
     <Project Path="src/BankLoan.Application/BankLoan.Application.csproj" />
     <Project Path="src/BankLoan.Domain/BankLoan.Domain.csproj" />
     <Project Path="src/BankLoan.Infrastructure/BankLoan.Infrastructure.csproj" />
-    <Project Path="src/BankLoan.Shared/BankLoan.Shared.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/BankLoan.UnitTests/BankLoan.UnitTests.csproj" />

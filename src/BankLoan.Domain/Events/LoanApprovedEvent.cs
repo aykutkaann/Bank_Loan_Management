@@ -5,9 +5,8 @@ using System.Text;
 namespace BankLoan.Domain.Events
 {
     public record LoanApprovedEvent
-    (
-         Guid ApplicationId,
-         Guid ApprovedUserId
-
-    );
+    {
+        public Guid ApplicationId { get; init; }
+        public Guid ApprovedUserId { get; init; }
+    }
 }
